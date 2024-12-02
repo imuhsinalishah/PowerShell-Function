@@ -1,0 +1,157 @@
+##### 1
+function Get-MLOVersion
+{
+$PSVersionTable.PSVersion.Major
+}
+
+#2### Very Simple Function #################
+Function Write-Welcome
+{
+Write-Host "Welcome Mr. Raymond"
+}
+
+#3 ####################### Specifying parameter ##################
+Function Write-Welcome
+{param ($name)
+Write-Host "Welcome Mr. $Name"
+}
+(Get-Command -Name Write-Welcome).Parameters.Keys
+Get-Command -Name Write-Welcome -Syntax
+
+#4 ################################### Advanced Functions ###################3
+Function Welcome
+{
+[CmdletBinding()]
+param ($name)
+Write-host "Welcome Mr. $Name"
+}
+(Get-Command -Name Welcome).Parameters.Keys
+
+#5 #### Include WhatIf and Confirm
+Function Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param ($name)
+Write-host "Welcome Mr. $Name"
+}
+(Get-Command -Name Welcome).Parameters.Keys
+
+#6 #### Decalre a Parameter as Mandatory ####
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[Parameter(Mandatory)]
+$name)
+Write-host "Welcome Mr $Name"
+}
+(Get-Command -Name Welcome).Parameters.Keys
+
+#7 ################ Setting Default Value #####
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[ValidateNotNullOrEmpty()]
+[string[]]$name = "Raymond"
+)
+Write-host "Welcome Mr. $Name"
+}
+
+#8 #### With Verbose #####
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[ValidateNotNullOrEmpty()]
+[string[]]$name = "Raymond"
+)
+Write-Verbose -Message "Welcoming Our Guest"
+Write-host "Welcome Mr. $Name"
+}
+
+#9 ### Adding Help ####
+Function Write-Welcome
+{
+<#
+.SYNOPSIS
+ Welcomes User
+.DESCRIPTION
+ Write-Welcome is a function that welcomes User
+.PARAMETER Name
+ Defines the Name of User
+.PARAMETER Place
+.EXAMPLE
+ Write-Welcome -Name "Raymond"
+.EXAMPLE
+ Example2
+.EXAMPLE
+ Example3
+.INPUTS
+ String
+.OUTPUTS
+ PSCustomObject
+.NOTES
+ Author: luxmi narayaan
+ Website: Test Function
+
+#>
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[ValidateNotNullOrEmpty()]
+[string[]]$name = "Raymond"
+)
+Write-Verbose -Message "Welcoming Our Guest"
+Write-host "Welcome Mr $Name"
+}
+#10 #### Using Multiple Parameters #####
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[ValidateNotNullOrEmpty()]
+[string[]]$Name = "Raymond",
+[ValidateNotNullOrEmpty()]
+[string[]]$Place = "India"
+)
+Write-Verbose -Message "Welcoming Our Guest"
+Write-host "Welcome Mr. $Name to $place"
+}
+
+######## Ensure that parameter Value is Selected out of Some predefined Values Only
+#####
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+#[Parameter(Mandatory)]
+[ValidateSet("Services","Process","Events")]
+[string[]]$Item = ("Services","Process","Events")
+)
+Switch($item)
+ {
+ Services{
+ Write-Host "Listing first 5 Services" -ForegroundColor Green
+ Get-Service|select -First 5
+ }
+ Process{
+ Write-Host "Listing first 5 Processes" -ForegroundColor Green
+ Get-Process|select -First 5
+ }
+ events{
+ Write-Host "Listing first 5 Events" -ForegroundColor Green
+ Get-EventLog -LogName Application|select -First 5}
+ }
+}
+Write-Welcome -Item Events
+##################### Defining Option for Single or Multiple Values
+Function Write-Welcome
+{
+[CmdletBinding(SupportsShouldProcess)]
+param (
+[Parameter(Mandatory)]
+[string]$name)
+Write-host "Welcome Mr $Name"
+}
+Write-Welcome -name ("a","b")
+Write-Welcome -name a
